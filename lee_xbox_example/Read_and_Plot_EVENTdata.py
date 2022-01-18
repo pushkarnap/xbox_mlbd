@@ -6,8 +6,8 @@ import operator
 from nptdms import TdmsFile
 from nptdms import tdms
 import pathlib
-import pprint
-pp = pprint.PrettyPrinter()
+from pprint import pprint as pp
+import pandas as pd
 
 work_dir = os.getcwd()
 out_dir = os.path.join(work_dir, "output")
@@ -51,10 +51,33 @@ group_names_A = [group.name for group in groups_A]
 group_names_B = [group.name for group in groups_B]
 
 # prints the properties associated with the first group
+tgrp = groups_A[0]
+pp(tgrp.__dict__)
+#pp(vars(tgrp))
+#pp(dir(tgrp))
+tgrpprp = tgrp.properties
+tgrpchls = tgrp.channels()
+tgrpnm = tgrp.name
+tgrppt = tgrp.path
+tgrpdf = tgrp.as_dataframe()
+
+tchl = tgrpchls[0]
+pp(dir(tchl))
+tchldf = tchl.as_dataframe()
+tchltt = tchl.time_track()
+pp(len(tchltt))
+#pp(tgrpprp)
+#pp(tgrpchls)
+#print(tgrpnm)
+#print(tgrppt)
+#pp(tgrpdf)
+
+"""
 for group_name in group_names_A:
     group_prop = file_A[group_name].properties
-    if group_prop['Log Type'] != 3:
-        pp.pprint(group_prop)
+    pp(vars(group_name))
+"""
+
 
 '''
 # prints the channels i.e. the waveforms we log on each pulse

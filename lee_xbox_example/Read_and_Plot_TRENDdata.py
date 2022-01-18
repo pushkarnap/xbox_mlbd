@@ -40,7 +40,7 @@ end = start
 
 #Check if the file exists for each day and plot it if it does
 ######################################################################################################
-for date in daterange( start, end ):
+for date in daterange(start, end):
     use_date = date.strftime('20%y%m%d')
     file_name = "TrendData_%s.tdms" % use_date
     check_file_path = os.path.join(data_dir, file_name)

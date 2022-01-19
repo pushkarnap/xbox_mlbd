@@ -1,0 +1,12 @@
+2022-01-19 11:41:52.739602: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-01-19 11:41:52.739621: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+usage: xbox2_main.py [-h] [--file_path FILE_PATH]
+                     [--raw_data_path RAW_DATA_PATH] [--data_path DATA_PATH]
+                     [--output_path OUTPUT_PATH] [--dataset_name DATASET_NAME]
+                     [--transform_to_hdf5 TRANSFORM_TO_HDF5]
+                     [--calculate_features CALCULATE_FEATURES]
+                     [--explain_predictions EXPLAIN_PREDICTIONS]
+                     [--hyperparameter_path HYPERPARAMETER_PATH]
+                     [--manual_split MANUAL_SPLIT]
+                     [--manual_scale MANUAL_SCALE]
+xbox2_main.py: error: argument --raw_data_path: expected one argument

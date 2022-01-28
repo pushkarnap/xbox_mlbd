@@ -70,6 +70,8 @@ for date in daterange(start, end):
         for temp_chl, chl_colour in PC1_tempchannels.items():
             temp_data = tdms_file[group_name][temp_chl]
             time_data = tdms_file[group_name]["Timestamp"]
+            xfmt = md.DateFormatter('%H:%M:%S:%f ')
+            ax.xaxis.set_major_formatter(xfmt)
             ax.plot(time_data, temp_data, chl_colour, label = temp_chl)
         fig.savefig(f"output/PC1_temp_TREND_{group_name}.png")
 

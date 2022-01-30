@@ -11,7 +11,6 @@ class trendrun:
         self.DATE_FORMAT = dateformat
         self.time_init_utc = self.calc_time_init()
         self.time_init_posix = self.time_init_utc.timestamp()
-        #self.utc_tstamp = self.posix_to_utc()
 
     def calc_time_init(self):
         run_name = self.group.name
@@ -20,6 +19,19 @@ class trendrun:
         local_dt = local.localize(naive, is_dst = None)
         utc_dt = local_dt.astimezone(pytz.utc)
         return utc_dt
+
+    def calc_rel_time(self):
+        tstamps_raw = np.array(self.group["Timestamp"])
+        tstamps_min = np.amin(tstamps_raw)
+        tstamps_init = tstamps_raw[0]
+
+        if tstamps_min == tstamps_init:
+            tstamps_rel = tstamps_raw - tstamps_min
+            tstamps_rel_posix = tstamps_rel + self.time_init_posix
+            tstamps_rel_utc = np.vectorize(datetime.utcfromtimestamp)(tstamps_rel)
+            return tstamps_rel, tstamps_rel_posix, tstamps_rel_utc
+        else:
+            return "Timestamp array out of order!"
 
     """
     def posix_to_utc(self):

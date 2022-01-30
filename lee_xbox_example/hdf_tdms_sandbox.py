@@ -7,7 +7,7 @@ from nptdms import TdmsFile, tdms
 
 import numpy as np
 from runpulseobj import trendrun
-import pprint as pp
+#import pprint as pp
 
 api_dir = "/home/student.unimelb.edu.au/pushkarnap/Documents/research/rfstudies"
 tdms_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/lee_xbox_example/Xbox3_TD24_bo_L3")
@@ -23,6 +23,15 @@ from src.transformation import transform
 
 if FIRST_TRANSFORM:
     transform(tdms_dir=tdms_path, hdf_dir=hdf_path)
+
+"""
+with h5py.File(hdfdata_path/"EventDataA_20200211.hdf", "r") as fhand:
+    pulses = [val for val in fhand.values()]
+    expuls = pulses[0]
+    chls = [val for val in expuls.values()]
+    for chl in chls:
+        for chl_attr in chl.attrs.__iter__():
+            print(chl_attr)
 
 with TdmsFile.open(tdms_path/"TrendData_20200211.tdms") as fhand:
     #pp.pprint(fhand.__dict__)
@@ -89,7 +98,7 @@ with h5py.File(hdfdata_path/"EventDataA_20200211.hdf", "r") as fhand:
     chl_attr_iter = exchl.attrs.__iter__()
     for chl_attr in chl_attr_iter:
         pp.pprint(chl_attr)
-
+"""
 
 """
 date_format = "%Y.%m.%d-%H:%M:%S.%f"

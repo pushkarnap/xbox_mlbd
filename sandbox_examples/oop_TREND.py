@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
+from dateutil.relativedelta import relativedelta
 import pytz
 import numpy as np
+
+LABVIEW_OFFSET = 66 #years
 
 class trendrun:
 
@@ -9,16 +12,18 @@ class trendrun:
     def __init__(self, rungroup, dateformat):
         self.group = rungroup
         self.DATE_FORMAT = dateformat
-        self.time_init_utc = self.calc_time_init()
-        self.time_init_posix = self.time_init_utc.timestamp()
+        self.true_tstamps_utc = self.labview_to_unix()
+        self.time_init = self.calc_time_init()
 
     def calc_time_init(self):
         run_name = self.group.name
-        naive = datetime.strptime(run_name, self.DATE_FORMAT)
-        local = pytz.timezone("Europe/Zurich")
-        local_dt = local.localize(naive, is_dst = None)
-        utc_dt = local_dt.astimezone(pytz.utc)
-        return utc_dt
+        dt = datetime.strptime(run_name, self.DATE_FORMAT)
+        return dt
+        #CHANGELOG: have reason to believe that the recorded times are already
+        #in UTC, so no time conversion required.
+        #local = pytz.timezone("Europe/Zurich")
+        #local_dt = local.localize(naive, is_dst = None)
+        #utc_dt = local_dt.astimezone(pytz.utc)
 
     def calc_rel_time(self):
         tstamps_raw = np.array(self.group["Timestamp"])
@@ -33,15 +38,16 @@ class trendrun:
         else:
             return "Timestamp array out of order!"
 
+    def labview_to_unix(self):
+        labview_tstamps = np.array(self.group["Timestamp"])
+        labview_dates = np.vectorize(datetime.utcfromtimestamp)(labview_tstamps)
+        true_dates = labview_dates - np.vectorize(relativedelta)(years = LABVIEW_OFFSET)
+        return true_dates
+
+
     """
     def posix_to_utc(self):
         tstamps = list(np.array(self.group['Timestamp']))
         utcs = [datetime.fromtimestamp(tstamp, tz = pytz.utc) for tstamp in tstamps]
         return utcs
     """
-class pulse:
-
-    "Procssing tasks for pulse data"
-
-    def __init__(self, pulsegroup):
-        self.group = pulsegroup

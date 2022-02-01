@@ -6,13 +6,13 @@ import h5py
 from nptdms import TdmsFile, tdms
 
 import numpy as np
-from runpulseobj import trendrun
+from oop_calc import trendrun
 #import pprint as pp
 
 api_dir = "/home/student.unimelb.edu.au/pushkarnap/Documents/research/rfstudies"
-tdms_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/lee_xbox_example/Xbox3_TD24_bo_L3")
-hdf_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/lee_xbox_example/hdf_data")
-hdfdata_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/lee_xbox_example/hdf_data/data")
+tdms_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/sandbox_examples/Xbox3_TD24_bo_L3")
+hdf_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/sandbox_examples/hdf_data")
+hdfdata_path = Path("/home/student.unimelb.edu.au/pushkarnap/Documents/research/xbox_mlbd/sandbox_examples/hdf_data/data")
 
 FIRST_TRANSFORM = 0
 
@@ -23,6 +23,14 @@ from src.transformation import transform
 
 if FIRST_TRANSFORM:
     transform(tdms_dir=tdms_path, hdf_dir=hdf_path)
+
+DATE_FORMAT = "/%Y.%m.%d-%H:%M:%S.%f"
+with h5py.File(hdfdata_path/"TrendData_20200211.hdf", "r") as fhand:
+    keys = fhand.keys()
+    runs = [trendrun(fhand[key], DATE_FORMAT) for key in keys]
+    for run in runs:
+        print(run.time_init_posix)
+        print(np.array(run.group['Timestamp']))
 
 """
 with h5py.File(hdfdata_path/"EventDataA_20200211.hdf", "r") as fhand:

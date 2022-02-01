@@ -3,5 +3,6 @@ XBOX_pyenv
 *.zip
 *.7z
 *.pdf
-lee_xbox_example/Xbox3_TD24_bo_L3
-lee_xbox_example/hdf_data
+sandbox_examples/Xbox3_TD24_bo_L3
+sandbox_examples/hdf_data
+Data

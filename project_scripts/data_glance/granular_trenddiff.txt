@@ -1,0 +1,63 @@
+considering TrendData_20180821.tdms
+   12846 207  33
+   12847 307 325
+   12848   4   3
+considering TrendData_20181005.tdms
+   12845 307 107
+   12846 117 207
+   12847 100 307
+   12848   3   4
+considering TrendData_20181009.tdms
+   12845 107 207
+   12846 207 315
+   12847 307 276
+   12848   4   2
+considering TrendData_20181029.tdms
+   12845   7  47
+   12846 105 265
+   12847 324 212
+considering TrendData_20181210.tdms
+   12845 147 347
+   12846 151  47
+   12847  56  73
+considering TrendData_20190114.tdms
+   12845 147  47
+   12846  34 323
+   12847 122 133
+considering TrendData_20190326.tdms
+11897921 207 147
+11897922  76  24
+11897923  64  35
+11897924   1   2
+considering TrendData_20190625.tdms
+46733365 207   7
+46733366 344 134
+46733367  34  25
+considering TrendData_20190709.tdms
+   12845  47 307
+   12846  66   3
+   12847 115 110
+considering TrendData_20190729.tdms
+   12845   7 107
+   12846  43 207
+   12847 102 307
+   12848   2   4
+considering TrendData_20190731.tdms
+   12845 207 107
+   12846   5 344
+   12847  77 247
+considering TrendData_20190826.tdms
+   12845 247 107
+   12846  61 207
+   12847 112 307
+   12848   2   4
+considering TrendData_20190827.tdms
+   12845   7 307
+   12846 234 376
+   12847 145 101
+   12848   3   2
+considering TrendData_20190829.tdms
+   12845 107 347
+   12846 207  44
+   12847 307 143
+   12848   4   2

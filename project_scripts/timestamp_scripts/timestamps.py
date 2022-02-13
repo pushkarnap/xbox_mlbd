@@ -36,36 +36,3 @@ if __name__ == "__main__":
 
     with open("timestampB.pickle", "wb") as fhand:
         pickle.dump((pulse_delays, trend_lags, label_errs), fhand)
-
-
-
-
-    # for event_path in event_paths:
-    #     init = time.perf_counter()
-    #     print(f"BEGIN PROCESSING {event_path.stem}")
-    #
-    #     with concurrent.futures.ProcessPoolExecutor() as executor:
-    #
-    #
-    #     pulsing_delay, logging_lag, label_err = \
-    #                 timestamp_processor(event_path, path_l3, path_l4)
-    #
-    #     pulse_delays.append(pulsing_delay)
-    #     log_lags.append(logging_lag)
-    #     trend_label_errs.append(label_err)
-    #
-    #     fin = time.perf_counter()
-    #     print(f"FINISHED PROCESSING {event_path.stem}, took {fin - init} sec(s)")
-
-    # print("WRITING FILES")
-    # with open("pulse_delays.txt", "w") as f:
-    #     for delay in pulse_delays:
-    #         f.write(f"{delay}\n")
-    #
-    # with open("logging_lags.txt", "w") as f:
-    #     for lag in log_lags:
-    #         f.write(f"{lag}\n")
-    #
-    # with open("trend_labs.txt", "w") as f:
-    #     for lab in trend_label_errs:
-    #         f.write(f"{lab}\n")

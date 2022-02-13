@@ -104,9 +104,11 @@ def timestamp_processor(event_path, *trend_paths):
     tstamps_trend = {}
     if trend_path:
         tstamps_trend = extract_trend_tstamps(trend_path)
-        return calculate_time_metrics(tstamps_event, tstamps_trend, file_date)
+        return tstamps_event, tstamps_trend
+        #OLD IMPLEMENTATION
+        #return calculate_time_metrics(tstamps_event, tstamps_trend, file_date)
     else:
-        return ("", "", "")
+        return tstamps_event, None
 
 def timedelta_to_seconds(delta):
     if delta:
@@ -127,10 +129,48 @@ def to_histogram(val_arr, bin_num, out_path, title, savename):
     plt.close()
     return
 
+def stitch_trend(path, channel_name):
 
+    stitched = np.array([])
+    with h5py.File(path, "r") as fhand:
+        for run_name in fhand.keys():
+            run = fhand[run_name]
+            try:
+                channel_array = np.array(run[channel_name])
+            except:
+                raise FileNotFoundError("CHANNEL NAME DOES NOT EXIST")
+            stitched = np.concatenate((stitched, channel_array), axis = 0)
+    return stitched
 
+def calc_plot_time(tstamps):
 
+    def to_seconds_fun(tstamp):
+        return tstamp.total_seconds()
 
+    dts = labview_to_dt(tstamps)
+    rel_dts = dts - np.amin(dts)
+    rel_secs = np.vectorize(to_seconds_fun)(rel_dts)
+
+    return rel_secs
+
+def plot_trend_from_stitch(x_name, y_name, path, out_path):
+
+    file_name = path.stem
+    x_vals = stitch_trend(path, x_name)
+    if (x_name == "Timestamp"):
+        x_vals = calc_plot_time(x_vals)/3600
+    y_vals = stitch_trend(path, y_name)
+
+    fig, ax = plt.subplots()
+    ax.set_title(f"{y_name} vs {x_name} -- {file_name}")
+    ax.set_ylabel(y_name)
+    ax.set_xlabel(x_name)
+    # ax.set_ylim([0, 0.5e-8])
+    # ax.set_xlim([0, 0.1])
+    ax.scatter(x_vals, y_vals, marker="s", s=(72./fig.dpi)**2, edgecolor="None")
+    fig.savefig(out_path/f"{y_name}{x_name}{file_name}_crop.png")
+
+    return
 # class trendrun:
 #
 #     "Processing tasks for trend data"

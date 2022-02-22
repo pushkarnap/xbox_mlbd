@@ -1,0 +1,11 @@
+{'_id': <h5py.h5f.FileID object at 0x7fdced30ed60>, '_libver': (None, 'latest')}
+'name'
+{'_id': <h5py.h5g.GroupID object at 0x7fdced30eef0>}
+{'_cache_props': {},
+ '_dcpl': <h5py.h5p.PropDCID object at 0x7fdced2c0860>,
+ '_dxpl': <h5py.h5p.PropDXID object at 0x7fdced2c0770>,
+ '_filters': {},
+ '_id': <h5py.h5d.DatasetID object at 0x7fdce67be220>,
+ '_local': <_thread._local object at 0x7fdced2c0680>,
+ '_readonly': True}
+'NI_ArrayColumn'

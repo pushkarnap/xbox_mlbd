@@ -43,9 +43,8 @@ def extract_event_tstamps(event_path):
     """
     tstamps_event = []
     with h5py.File(event_path, "r") as fhand:
-        for key in fhand.keys():
-            pulse = fhand[key]
-            tstamp = pulse.attrs["Timestamp"]
+        for key in fhand:
+            tstamp = fhand[key].attrs["Timestamp"]
             tstamp = tstamp.decode('utf-8')
             tstamps_event.append(parser.parse(tstamp, ignoretz = True))
     return np.array(tstamps_event)
@@ -117,12 +116,12 @@ def timedelta_to_seconds(delta):
         return None
 
 def to_histogram(val_arr, bin_num, out_path, title, savename):
-    val_arr = np.vectorize(timedelta_to_seconds)(np.array(val_arr))/3600
-    val_arr = val_arr[~np.isnan(val_arr)]
+    # val_arr = np.vectorize(timedelta_to_seconds)(np.array(val_arr))/3600
+    # val_arr = val_arr[~np.isnan(val_arr)]
 
     n, bins, patches = plt.hist(val_arr, bins = bin_num)
 
-    plt.xlabel("Time difference (Hrs)")
+    plt.xlabel("Increment (s)")
     plt.ylabel("Frequency")
     plt.title(title)
     plt.savefig(out_path/savename)
@@ -133,7 +132,8 @@ def stitch_trend(path, channel_name):
 
     stitched = np.array([])
     with h5py.File(path, "r") as fhand:
-        for run_name in fhand.keys():
+        run_groups_sorted = sorted(list(fhand.keys()), key = parser.parse)
+        for run_name in run_groups_sorted:
             run = fhand[run_name]
             try:
                 channel_array = np.array(run[channel_name])
@@ -157,20 +157,89 @@ def plot_trend_from_stitch(x_name, y_name, path, out_path):
 
     file_name = path.stem
     x_vals = stitch_trend(path, x_name)
+    y_vals = stitch_trend(path, y_name)
     if (x_name == "Timestamp"):
         x_vals = calc_plot_time(x_vals)/3600
-    y_vals = stitch_trend(path, y_name)
+    if (y_name == "Timestamp"):
+        y_vals = calc_plot_time(y_vals)/3600
 
     fig, ax = plt.subplots()
-    ax.set_title(f"{y_name} vs {x_name} -- {file_name}")
+    ax.set_title(f"{y_name} vs {x_name} {file_name}")
     ax.set_ylabel(y_name)
     ax.set_xlabel(x_name)
     # ax.set_ylim([0, 0.5e-8])
     # ax.set_xlim([0, 0.1])
-    ax.scatter(x_vals, y_vals, marker="s", s=(72./fig.dpi)**2, edgecolor="None")
-    fig.savefig(out_path/f"{y_name}{x_name}{file_name}_crop.png")
-
+    ax.scatter(x_vals, y_vals,
+                marker = "s", s = (72./fig.dpi)**2, edgecolor="None")
+    fig.savefig(out_path/f"{y_name}{x_name}{file_name}.png")
     return
+
+def stitch_check(trend_path):
+
+    with h5py.File(trend_path, "r") as fhand:
+        run_groups_sorted = sorted(list(fhand.keys()), key = parser.parse)
+        curr_end = fhand[run_groups_sorted[0]]["Timestamp"][-1]
+        if len(run_groups_sorted) > 1:
+            gaps = []
+            for run_name in run_groups_sorted[1:]:
+                start = fhand[run_name]["Timestamp"][0]
+                delta_check = start - curr_end
+                gaps.append(delta_check)
+                curr_end = fhand[run_name]["Timestamp"][-1]
+            return np.array(gaps)
+        else:
+            return np.array([])
+
+def create_event_time(channel):
+
+    delta_t = channel.attrs["wf_increment"]
+    n = channel.attrs["wf_samples"]
+    rel_event_tstamps, step = np.linspace(0, (n-1)*delta_t, num = n, retstep = True)
+    return rel_event_tstamps
+
+def plot_wf(channel, xlabel, ylabel, out_path):
+
+    channel_data = np.array(channel)
+    tstamps = create_event_time(channel)
+
+    fig, ax = plt.subplots()
+    ax.set_title(f"{ylabel} vs {xlabel}")
+    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel)
+    ax.plot(tstamps, channel_data, linewidth = 0.5)
+    fig.savefig(out_path/f"{ylabel}{xlabel}.png")
+    return
+
+def trend_time_inc_labview(trend_path):
+
+    increms = np.array([])
+    with h5py.File(trend_path, "r") as fhand:
+        for run in fhand:
+            tstamps = np.sort(np.array(fhand[run]["Timestamp"]))
+            tstamps_norm = tstamps - np.amin(tstamps) #'normalise' to avoid large number errors
+            inc = np.diff(tstamps_norm) #compute difference between adjacent elements
+            increms = np.concatenate((increms, inc), axis = 0)
+    return increms
+
+def trend_time_inc_dt(trend_path):
+
+    increms = np.array([])
+    with h5py.File(trend_path, "r") as fhand:
+        for run in fhand:
+            tstamps = np.sort(np.array(fhand[run]["Timestamp"]))
+            tstamps_dt = labview_to_dt(tstamps)
+            inc = np.diff(tstamps_dt)
+            inc_secs = np.vectorize(timedelta_to_seconds)(inc)
+            increms = np.concatenate((increms, inc_secs), axis = 0)
+    return increms
+
+def event_time_inc_dt(event_path):
+
+    tstamps = np.sort(extract_event_tstamps(event_path))
+    inc = np.diff(tstamps)
+    inc_secs = np.vectorize(timedelta_to_seconds)(inc)
+
+    return inc_secs
 # class trendrun:
 #
 #     "Processing tasks for trend data"

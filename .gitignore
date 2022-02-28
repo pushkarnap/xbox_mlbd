@@ -8,3 +8,5 @@ sandbox_examples/hdf_data
 Data
 project_scripts/timestamp_scripts/output/DUT1presh
 project_scripts/timestamp_scripts/output/timestamp_linearity_check
+project_scripts/timestamp_scripts/output/pulsecounting
+project_scripts/conditioning/retrieved_trend
